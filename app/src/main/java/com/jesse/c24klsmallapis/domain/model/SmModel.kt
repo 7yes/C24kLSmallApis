@@ -1,7 +1,5 @@
 package com.jesse.c24klsmallapis.domain.model
 
-import com.google.gson.annotations.SerializedName
-import com.jesse.c24klsmallapis.data.model.Relative
 import com.jesse.c24klsmallapis.data.model.SmResponseItem
 
 data class SmModel (
@@ -9,7 +7,8 @@ data class SmModel (
     val name:String?,
     val age:String?,
     val image:String?,
-    val firstEpisode:String?
+    val firstEpisode:String?,
+    val wikiUrl: String?
 )
 
 fun SmResponseItem.toDomain() = SmModel(
@@ -17,5 +16,6 @@ fun SmResponseItem.toDomain() = SmModel(
     name = name,
     age = age,
     image = image,
-    firstEpisode = firstEpisode
+    firstEpisode = firstEpisode,
+    wikiUrl = wikiUrl
 )

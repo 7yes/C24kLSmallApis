@@ -1,5 +1,8 @@
 package com.jesse.c24klsmallapis.presentaion
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,8 +10,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -84,7 +91,7 @@ fun HomeScreen(viemModel: SMViewModel = hiltViewModel(), onclikListener: (SmMode
 
         is UIState.Success -> {
             val list = (state.value as UIState.Success).mySuccessList
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(modifier = Modifier.fillMaxSize().padding(vertical = 24.dp)) {
                 items(list) { item ->
                     ItemView(item, onclikListener)
                 }
@@ -100,34 +107,44 @@ fun ErrorScreen(error: String) {
     }
 }
 
+fun openLink(context: Context, url: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    context.startActivity(intent)
+}
+
 @Composable
 fun DetailScreen(item: SmModel) {
+    val context = LocalContext.current
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         AsyncImage(
-            model = item.image, modifier = Modifier.fillMaxWidth().height(450.dp).padding(24.dp),
+            model = item.image, modifier = Modifier
+                .fillMaxWidth()
+                .height(450.dp)
+                .padding(24.dp),
             contentDescription = "Image", alignment = Alignment.Center,
             contentScale = ContentScale.FillBounds
         )
-        MyText("Name: ${item.name.toString()}",Color.Blue,Color.White)
-        MyText("Age: ${item.age.toString()}",Color.Blue,Color.White)
-        MyText("First Episode: ${item.firstEpisode.toString()}",Color.Blue,Color.White)
+        MyText("Name: ${item.name.toString()}", Color.Blue, Color.White)
+        MyText("Age: ${item.age.toString()}", Color.Blue, Color.White)
+        MyText("First Episode: ${item.firstEpisode.toString()}", Color.Blue, Color.White)
+        Button(onClick = { openLink(context,item.wikiUrl.toString())}, modifier = Modifier.padding(24.dp)) {
+            Text(text = "Click Me")
+        }
     }
 }
 
 @Composable
 fun ItemView(item: SmModel, onClickListener: (SmModel) -> Unit) {
-    Box(
-        contentAlignment = Alignment.BottomCenter,
+    Row (verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .padding(24.dp)
+            .padding(8.dp)
             .clip(RoundedCornerShape(24))
             .border(2.dp, Color.Green, shape = RoundedCornerShape(0, 24, 0, 24))
-            .fillMaxWidth()
             .clickable { onClickListener(item) }
-            .height(250.dp)
+            .fillMaxWidth()
     ) {
         AsyncImage(
-            model = item.image, modifier = Modifier.fillMaxWidth(),
+            model = item.image, modifier = Modifier.size(150.dp),
             contentDescription = "Image", alignment = Alignment.Center,
             contentScale = ContentScale.FillBounds
         )
