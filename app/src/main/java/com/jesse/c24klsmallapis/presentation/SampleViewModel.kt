@@ -17,6 +17,9 @@ class SampleViewModel @Inject constructor(private val getDataUC: GetDataUC) : Vi
     private val _dataList = MutableLiveData<List<SampleModel>>()
     val dataList: LiveData<List<SampleModel>> = _dataList
 
+    private val _selected = MutableLiveData<SampleModel>()
+    val selected: LiveData<SampleModel> = _selected
+
     init {
         getData()
     }
@@ -26,5 +29,9 @@ class SampleViewModel @Inject constructor(private val getDataUC: GetDataUC) : Vi
             _dataList.postValue(getDataUC())
         }
 
+    }
+
+    fun updateSelected(item: SampleModel) {
+        _selected.postValue(item)
     }
 }
